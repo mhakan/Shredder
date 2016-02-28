@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButtonMenuItem;
@@ -60,6 +61,7 @@ public class frmMain extends JFrame {
 		mnitmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
+
 			}
 		});
 
@@ -148,23 +150,25 @@ public class frmMain extends JFrame {
 				Thread t = new Thread() {
 					public void run() {
 
-						for (int i = 0; i <= ListItem.GetListModel().getSize(); i++) {
+						for (int i = 0; i < ListItem.GetListModel().getSize(); i++) {
 							final int t = i;
 							SwingUtilities.invokeLater(new Runnable() {
 								public void run() {
-									
-									progressBar.setValue(t);
-									int tmp=(t*100)/ListItem.GetListModel().getSize();
-									progressBar.setString(tmp+" % ");
-									
+
+									progressBar.setValue(t+1);
+									int tmp = ((t+1) * 100) / ListItem.GetListModel().getSize();
+									progressBar.setString(tmp + " % ");
+									FileShred file = new FileShred(ListItem.GetListModel().elementAt(t).toString(),
+											WipeMethod.DoD);
+									file.Shredding();
 								}
 							});
-try {
-	Thread.sleep(0, 100);
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
+							try {
+								Thread.sleep(0, 100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				};
