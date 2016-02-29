@@ -159,7 +159,7 @@ public class frmMain extends JFrame {
 									int tmp = ((t+1) * 100) / ListItem.GetListModel().getSize();
 									progressBar.setString(tmp + " % ");
 									FileShred file = new FileShred(ListItem.GetListModel().elementAt(t).toString(),
-											WipeMethod.DoD);
+											WipeMethod.Zero);
 									file.Shredding();
 								}
 							});
