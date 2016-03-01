@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 
 public class ListItem extends DefaultListModel<String> {
 
+	
 	private static ListItem listItems = null;
 
 	public static ListItem GetListModel() {

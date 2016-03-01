@@ -186,7 +186,7 @@ public class frmMain extends JFrame {
 									int tmp = ((t + 1) * 100) / ListItem.GetListModel().getSize();
 									progressBar.setString(tmp + " % ");
 									Shred shr = new ShredFactory().ShredType(metod,
-											ListItem.GetListModel().elementAt(t).toString());
+											ListItem.GetListModel().elementAt(t).toString());//anti pattern
 
 									shr.WipeFile();
 									progressBar.repaint();
