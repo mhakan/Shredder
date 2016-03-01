@@ -1,19 +1,17 @@
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.file.Files;
 
-import javax.swing.JOptionPane;
-
-public class ShredDod extends Shred {
+public class ShredDod extends Shred implements IShredFile {
 
 	public ShredDod(String path) {
 		super(path);
 		this.f = new File(path);
-		if (f == null) {
+		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
-				this.finalize();
+				finalize();
 			} catch (Throwable e) {
-				Logger.getLogger(ShredDod.class.getName()).log(Level.ALL, e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -21,17 +19,18 @@ public class ShredDod extends Shred {
 	public ShredDod(File file) {
 		super(file);
 		this.f = file;
-		if (f == null) {
+		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
-				this.finalize();
+				finalize();
 			} catch (Throwable e) {
-				Logger.getLogger(ShredDod.class.getName()).log(Level.ALL, e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
 
 	public void WipeFile() {
- 
+
 		for (short j = 0; j < 3; j++) {
 			WipeMetod((short) (j + 1));
 
@@ -39,6 +38,7 @@ public class ShredDod extends Shred {
 		SetCreationTime();
 		SetLastModifiedTime();
 		SetLastAccessTime();
+		f.delete();
 	}
 
 }

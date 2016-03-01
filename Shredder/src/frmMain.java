@@ -47,9 +47,9 @@ import java.awt.event.ItemEvent;
 public class frmMain extends JFrame {
 	private JTextField txtPath;
 	private DefaultListModel listModel;
-	private List<String> results;
+
 	private WipeMethod metod = WipeMethod.DoD;
-	private Shred shr;
+	private IShredFile shr;
 
 	public frmMain() {
 		setTitle("File Shredder");
@@ -127,10 +127,8 @@ public class frmMain extends JFrame {
 				int i = jfile.showOpenDialog(frmMain.this);
 				if (i == JFileChooser.APPROVE_OPTION) {
 					txtPath.setText(jfile.getSelectedFile().getAbsolutePath());
-					results = new ArrayList<String>();
 					ListItem.GetListModel().clear();
 					LoadListByPath(txtPath.getText());
-					frmMain.this.setTitle(String.valueOf(results.size()));
 				}
 			}
 		});
@@ -185,8 +183,9 @@ public class frmMain extends JFrame {
 									progressBar.setValue(t + 1);
 									int tmp = ((t + 1) * 100) / ListItem.GetListModel().getSize();
 									progressBar.setString(tmp + " % ");
-									Shred shr = new ShredFactory().ShredType(metod,
-											ListItem.GetListModel().elementAt(t).toString());//anti pattern
+									shr = new ShredFactory().ShredType(metod,
+											ListItem.GetListModel().elementAt(t).toString());// anti
+									// pattern
 
 									shr.WipeFile();
 									progressBar.repaint();
@@ -206,7 +205,7 @@ public class frmMain extends JFrame {
 
 		File f = new File(text);
 		if (f.exists() && f.isDirectory()) {
-			results.add(text);
+			ListItem.GetListModel().AddListItem(f.getAbsolutePath());
 
 			File[] list = f.listFiles();
 			if (list != null) {

@@ -5,11 +5,8 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
 
 /**
  * 
@@ -19,15 +16,17 @@ import javax.swing.JOptionPane;
  * @author Selami
  *
  */
-public class Shred {
+public class Shred implements IShredFile {
 
 	protected File f;
 
+
+
 	public Shred(File file) {
 		this.f = file;
-		if (f == null) {
+		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
-				this.finalize();
+				finalize();
 			} catch (Throwable e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -37,9 +36,9 @@ public class Shred {
 
 	public Shred(String path) {
 		f = new File(path);
-		if (f == null) {
+		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
-				this.finalize();
+				finalize();
 			} catch (Throwable e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -53,9 +52,10 @@ public class Shred {
 		SetCreationTime();
 		SetLastModifiedTime();
 		SetLastAccessTime();
+		f.delete();
 	}
 
-	public void SetCreationTime() {
+	protected void SetCreationTime() {
 
 		try {
 			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473600000L) * 10000L);
@@ -66,7 +66,7 @@ public class Shred {
 		}
 	}
 
-	public void SetLastAccessTime() {
+	protected void SetLastAccessTime() {
 
 		try {
 			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473700000L) * 10000L);
@@ -76,7 +76,7 @@ public class Shred {
 		}
 	}
 
-	public void SetLastModifiedTime() {
+	protected void SetLastModifiedTime() {
 
 		try {
 			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473500000L) * 10000L);
@@ -86,7 +86,7 @@ public class Shred {
 		}
 	}
 
-	public void WipeMetod(short id) {
+	protected void WipeMetod(short id) {
 		RandomAccessFile out;
 		try {
 			out = new RandomAccessFile(f.getAbsolutePath(), "rws");
@@ -98,7 +98,6 @@ public class Shred {
 			int lastPart = (int) fsize % buffer;
 			int loop = (int) (fsize - lastPart) / buffer;
 
-			byte[] byt = new byte[buffer];
 			try {
 				out.seek(0);
 			} catch (IOException e1) {
@@ -129,4 +128,5 @@ public class Shred {
 		}
 
 	}
+
 }
