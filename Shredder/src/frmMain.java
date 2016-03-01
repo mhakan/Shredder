@@ -11,6 +11,8 @@ import com.jgoodies.forms.layout.RowSpec;
 import java.awt.BorderLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -37,11 +39,17 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.JProgressBar;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class frmMain extends JFrame {
 	private JTextField txtPath;
 	private DefaultListModel listModel;
-	List<String> results;
+	private List<String> results;
+	private WipeMethod metod = WipeMethod.DoD;
+	private Shred shr;
 
 	public frmMain() {
 		setTitle("File Shredder");
@@ -71,9 +79,27 @@ public class frmMain extends JFrame {
 		menuBar.add(menuEdit);
 
 		JRadioButtonMenuItem rdbtnmnitmZeroPass = new JRadioButtonMenuItem("Zero Pass");
+		rdbtnmnitmZeroPass.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+					metod = WipeMethod.Zero;
+				} else
+					metod = WipeMethod.DoD;
+			}
+		});
 		menuEdit.add(rdbtnmnitmZeroPass);
 
 		JRadioButtonMenuItem rdbtnmnitmDodPass = new JRadioButtonMenuItem("DoD 3 Pass");
+		rdbtnmnitmDodPass.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+					metod = WipeMethod.DoD;
+				} else
+					metod = WipeMethod.Zero;
+			}
+		});
+
+		rdbtnmnitmDodPass.setSelected(true);
 		menuEdit.add(rdbtnmnitmDodPass);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdbtnmnitmDodPass);
@@ -146,6 +172,7 @@ public class frmMain extends JFrame {
 		getContentPane().add(progressBar, BorderLayout.SOUTH);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				progressBar.setValue(0);
 				progressBar.setMaximum(ListItem.GetListModel().getSize());
 				Thread t = new Thread() {
 					public void run() {
@@ -155,20 +182,17 @@ public class frmMain extends JFrame {
 							SwingUtilities.invokeLater(new Runnable() {
 								public void run() {
 
-									progressBar.setValue(t+1);
-									int tmp = ((t+1) * 100) / ListItem.GetListModel().getSize();
+									progressBar.setValue(t + 1);
+									int tmp = ((t + 1) * 100) / ListItem.GetListModel().getSize();
 									progressBar.setString(tmp + " % ");
-									FileShred file = new FileShred(ListItem.GetListModel().elementAt(t).toString(),
-											WipeMethod.Zero);
-									file.Shredding();
+									Shred shr = new ShredFactory().ShredType(metod,
+											ListItem.GetListModel().elementAt(t).toString());
+
+									shr.WipeFile();
+									progressBar.repaint();
 								}
 							});
-							try {
-								Thread.sleep(0, 100);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+
 						}
 					}
 				};

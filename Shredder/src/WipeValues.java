@@ -1,45 +1,48 @@
 import java.util.Random;
 
 public class WipeValues {
+	private int Length;
+	private int id;
 
-	private byte ZERO = (0x00), PASS1 = (0X55), PASS2 = (byte) (0XAA), PASS3 = (GetRandom());
-
-	public byte getZERO() {
-		return ZERO;
-
-	}
-
-	public byte getPass1() {
-		return PASS1;
+	public WipeValues(int len, short id) {
+		this.Length = len;
+		this.id = id;
 
 	}
 
-	public byte getPass2() {
-		return PASS2;
+	public WipeValues(int len) {
+		this.Length = len;
+	}
+
+	public byte[] GenerateValue() {
+		if (id == 0)
+			return SetRawBuf(Length, ZERO);
+		if (id == 1)
+			return SetRawBuf(Length, PASS1);
+		if (id == 2)
+			return SetRawBuf(Length, PASS2);
+		else if (id == 3)
+			return SetRawBuf(Length);
+		return null;
 
 	}
 
-	public byte getPass3() {
-		return GetRandom();
+	public static byte ZERO = (0x00), PASS1 = (0X55), PASS2 = (byte) (0XAA);
+
+	private byte[] SetRawBuf(int len, byte val) {
+		byte[] b = new byte[len];
+		for (int i = 0; i < b.length; i++) {
+			b[i] = val;
+		}
+		return b;
 
 	}
 
-	public byte PassByOrdinary(short i) {
-		if (i == 0)
-			return getZERO();
-		else if (i == 1)
-			return getPass1();
-		else if (i == 2)
-			return getPass2();
-		else if (i == 3)
-			return getPass3();
-		return 0;
+	private byte[] SetRawBuf(int Len) {
+		byte[] b = new byte[Len];
+		new Random().nextBytes(b);
+		return b;
 
-	}
-
-	private byte GetRandom() {
-		Random r = new Random();
-		return (byte) r.nextInt(255);
 	}
 
 }

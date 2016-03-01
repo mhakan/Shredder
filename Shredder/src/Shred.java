@@ -1,14 +1,8 @@
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.Random;
@@ -26,27 +20,42 @@ import javax.swing.JOptionPane;
  *
  */
 public class Shred {
-	private static final Logger LOGGER = Logger.getLogger(Shred.class.getName());
-	private int buffer = 1024;
 
-	public byte[] SetRawBuf(byte[] b, byte val) {
-		for (int i = 0; i < b.length; i++) {
-			b[i] = val;
+	protected File f;
+
+	public Shred(File file) {
+		this.f = file;
+		if (f == null) {
+			try {
+				this.finalize();
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return b;
-
 	}
 
-	public byte[] SetRawBuf(byte[] b, WipeValues val) {
-		for (int i = 0; i < b.length; i++) {
-			b[i] = val.getPass3();
-
+	public Shred(String path) {
+		f = new File(path);
+		if (f == null) {
+			try {
+				this.finalize();
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return b;
-
 	}
 
-	public void SetCreationTime(File f) {
+	public void WipeFile() {
+
+		WipeMetod((short) 0);
+		SetCreationTime();
+		SetLastModifiedTime();
+		SetLastAccessTime();
+	}
+
+	public void SetCreationTime() {
 
 		try {
 			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473600000L) * 10000L);
@@ -57,95 +66,56 @@ public class Shred {
 		}
 	}
 
-	public void SetLastAccessTime(File f) {
+	public void SetLastAccessTime() {
 
 		try {
-			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473600000L) * 10000L);
+			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473700000L) * 10000L);
 			Files.setAttribute(f.toPath(), "lastAccessTime", ft);
 		} catch (IOException e) {
 			Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
 		}
 	}
 
-	public void SetLastModifiedTime(File f) {
+	public void SetLastModifiedTime() {
 
 		try {
-			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473600000L) * 10000L);
+			FileTime ft = FileTime.fromMillis((new Date().getTime() + 11644473500000L) * 10000L);
 			Files.setAttribute(f.toPath(), "lastModifiedTime", ft);
 		} catch (IOException e) {
 			Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
 		}
 	}
 
-	public void WipeBody(File f, WipeMethod method) {
-
+	public void WipeMetod(short id) {
+		RandomAccessFile out;
 		try {
+			out = new RandomAccessFile(f.getAbsolutePath(), "rws");
 
-			RandomAccessFile out = new RandomAccessFile(f.getAbsolutePath(), "rws");
-
+			int buffer = 4096;
 			long fsize = f.length();
 			if (fsize < 8192)
-				buffer = (short) fsize;
+				buffer = (int) fsize;
 			int lastPart = (int) fsize % buffer;
 			int loop = (int) (fsize - lastPart) / buffer;
+
 			byte[] byt = new byte[buffer];
-			WipeValues val = new WipeValues();
-			if (method == WipeMethod.Zero) {
+			try {
+				out.seek(0);
+			} catch (IOException e1) {
+				Logger.getLogger(Shred.class.getName()).log(Level.ALL, e1.getMessage());
+			}
+			for (int i = 0; i < loop; i++) {
 				try {
-					out.seek(0);
-				} catch (IOException e1) {
-					Logger.getLogger(Shred.class.getName()).log(Level.ALL, e1.getMessage());
-				}
-				for (int i = 0; i < loop; i++) {
-					try {
-						out.write(SetRawBuf(byt, (byte) 0));
-					} catch (IOException e) {
-						Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
-					}
-				}
-				byt = new byte[lastPart];
-				try {
-					out.write(SetRawBuf(byt, (byte) 0));
+					out.write(new WipeValues(buffer, id).GenerateValue());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
 				}
+			}
 
-			} else if (method == WipeMethod.DoD) {
-				for (short j = 0; j < 3; j++) {
-					try {
-						out.seek(0);
-					} catch (IOException e1) {
-						Logger.getLogger(Shred.class.getName()).log(Level.ALL, e1.getMessage());
-					}
-					for (int i = 0; i < loop + 1; i++) {
-						try {
-
-							if (j < 2)
-								out.write(SetRawBuf(byt, val.PassByOrdinary((short) j)), i * buffer, buffer);
-							// else
-							// out.write(SetRawBuf(byt, val));
-						} catch (IOException e) {
-							Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
-						}
-					}
-					// Kalan part len%1024
-					// try {
-					//
-					// out.write(new byte[lastPart - 10], (int)
-					// out.getFilePointer(), lastPart-10);
-					//
-					// } catch (IOException e) {
-					// Logger.getLogger(Shred.class.getName()).log(Level.ALL,
-					// e.getMessage());
-					// } finally {
-					// try {
-					// out.close();
-					// } catch (IOException e) {
-					//
-					// }
-					// }
-				}
+			try {
+				out.write(new WipeValues(lastPart, id).GenerateValue());
+			} catch (IOException e) {
+				Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
 			}
 
 			try {
@@ -153,11 +123,10 @@ public class Shred {
 			} catch (IOException e) {
 
 			}
-
-		} catch (FileNotFoundException e) {
-			Logger.getLogger(Shred.class.getName()).log(Level.ALL, e.getMessage());
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
 		}
 
 	}
-
 }
