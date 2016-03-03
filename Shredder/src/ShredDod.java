@@ -16,6 +16,10 @@ public class ShredDod extends Shred implements IShredFile {
 		}
 	}
 
+	public void NameClear() {
+
+	}
+
 	public ShredDod(File file) {
 		super(file);
 		this.f = file;

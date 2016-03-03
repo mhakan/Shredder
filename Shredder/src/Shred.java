@@ -20,10 +20,9 @@ public class Shred implements IShredFile {
 
 	protected File f;
 
-
-
 	public Shred(File file) {
 		this.f = file;
+	
 		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
 				finalize();
@@ -86,11 +85,15 @@ public class Shred implements IShredFile {
 		}
 	}
 
+	public void NameClear() {
+
+	}
+
 	protected void WipeMetod(short id) {
 		RandomAccessFile out;
 		try {
 			out = new RandomAccessFile(f.getAbsolutePath(), "rws");
-
+				
 			int buffer = 4096;
 			long fsize = f.length();
 			if (fsize < 8192)
@@ -122,11 +125,22 @@ public class Shred implements IShredFile {
 			} catch (IOException e) {
 
 			}
+			SetFileLength(out);
 		} catch (FileNotFoundException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 
+	}
+
+	private void SetFileLength(RandomAccessFile out) {
+	try {
+		out.setLength(0);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		
 	}
 
 }
