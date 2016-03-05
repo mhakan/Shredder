@@ -1,3 +1,4 @@
+package ShredderUI;
 import java.io.File;
 
 public class FileTypeFactory {

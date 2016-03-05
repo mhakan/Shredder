@@ -1,3 +1,4 @@
+package ShredBase;
 import java.util.Random;
 
 public class WipeValues {

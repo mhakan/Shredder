@@ -1,5 +1,5 @@
+package ShredderUI;
 import java.io.File;
-import java.nio.file.attribute.FileTime;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -61,6 +61,13 @@ public class AbstractFileModel extends AbstractTableModel {
 			return false;
 	}
 
+	public void RemoveAll(){
+		
+		int i=dataVector.size();
+		dataVector.clear();
+		fireTableRowsDeleted(0, i);
+	}
+	
 	public void addEmptyRow() {
 //		dataVector.add(new FileModel());
 //		fireTableRowsInserted(dataVector.size() - 1, dataVector.size() - 1);

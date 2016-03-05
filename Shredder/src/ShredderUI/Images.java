@@ -1,3 +1,4 @@
+package ShredderUI;
 import javax.swing.ImageIcon;
 
 public class Images {

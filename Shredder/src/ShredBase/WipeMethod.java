@@ -1,3 +1,4 @@
+package ShredBase;
 
 public enum WipeMethod {
 Zero,

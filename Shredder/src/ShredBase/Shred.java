@@ -1,3 +1,4 @@
+package ShredBase;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Shred implements IShredFile {
 
 	public Shred(File file) {
 		this.f = file;
-	
+
 		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
 				finalize();
@@ -51,6 +52,7 @@ public class Shred implements IShredFile {
 		SetCreationTime();
 		SetLastModifiedTime();
 		SetLastAccessTime();
+
 		f.delete();
 	}
 
@@ -93,7 +95,7 @@ public class Shred implements IShredFile {
 		RandomAccessFile out;
 		try {
 			out = new RandomAccessFile(f.getAbsolutePath(), "rws");
-				
+
 			int buffer = 4096;
 			long fsize = f.length();
 			if (fsize < 8192)
@@ -134,13 +136,13 @@ public class Shred implements IShredFile {
 	}
 
 	private void SetFileLength(RandomAccessFile out) {
-	try {
-		out.setLength(0);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-		
+		try {
+			out.setLength(0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }

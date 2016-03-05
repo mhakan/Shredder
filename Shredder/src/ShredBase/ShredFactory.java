@@ -1,3 +1,5 @@
+package ShredBase;
+import java.io.File;
 
 public class ShredFactory {
 

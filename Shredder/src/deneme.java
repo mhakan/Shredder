@@ -9,6 +9,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import JTableTree.FileSystemModel2;
 import JTableTree.JTreeTable;
+import ShredderUI.AbstractFileModel;
 
 import java.awt.GridLayout;
 
