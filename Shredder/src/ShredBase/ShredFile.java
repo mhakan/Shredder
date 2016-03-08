@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @author Selami
  *
  */
-public class ShredFile extends Body  {
+public class ShredFile extends Body implements IMetaData {
 
 	protected File f;
 
@@ -56,6 +56,38 @@ public class ShredFile extends Body  {
 			e.printStackTrace();
 		}
 
+	}
+
+
+
+	@Override
+	public void NameClear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void SetCreationTime() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void SetLastAccessTime() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void SetLastModifiedTime() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
