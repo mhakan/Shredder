@@ -3,9 +3,9 @@ import java.io.File;
 
 public class ShredFactory {
 
-	public Shred ShredType(WipeMethod wipe, String path) {
+	public ShredFile ShredType(WipeMethod wipe, String path) {
 		if (wipe == WipeMethod.Zero) {
-			return new Shred(path);
+			return new ShredFile(new File(path));
 
 		} else if (wipe == WipeMethod.DoD) {
 			return new ShredDod(path);

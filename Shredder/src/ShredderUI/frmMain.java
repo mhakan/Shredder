@@ -4,18 +4,26 @@ import static java.awt.event.ItemEvent.SELECTED;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -24,21 +32,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollBar;
-import javax.swing.JToolBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileSystemView;
+import javax.swing.SwingUtilities;
 
 import ShredBase.WipeMethod;
 
-import java.awt.Toolkit;
-
 public class frmMain extends JFrame {
 
+	private JDialog dialog;
 	private ShredBase.WipeMethod metod = WipeMethod.DoD;
-	private ShredBase.IShredFile shr;
+	private ShredBase.ShredFile shr;
 	private JButton btnDosyaEkle, btnKlasorEkle, btnRemoveFile, btnRemoveAll, btnStart, btnPart, btnDisk;
 	private JTable table;
 	public static final String[] columnNames = { "Icon", "File", "Size", "Type", "Last Modified Time",
@@ -47,10 +53,7 @@ public class frmMain extends JFrame {
 	public frmMain() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(frmMain.class.getResource("/images/clear.png")));
 		setTitle("File Shredder");
-
-		this.setSize(822, 700);
-
-		this.setMaximumSize(new Dimension(800, 700));
+		this.setSize(104, 768);
 
 		initializeMenu();
 
@@ -68,7 +71,7 @@ public class frmMain extends JFrame {
 		toolBar.setRollover(true);
 
 		// Lay out the main panel.
-		setPreferredSize(new Dimension(450, 32));
+		setPreferredSize(new Dimension(1024, 768));
 		panel_1.add(toolBar, BorderLayout.NORTH);
 
 		JPanel panel_2 = new JPanel();
@@ -76,6 +79,7 @@ public class frmMain extends JFrame {
 		panel_2.setLayout(new BorderLayout(0, 0));
 
 		setJTable(panel_2);
+		pack();
 
 	}
 
@@ -172,12 +176,12 @@ public class frmMain extends JFrame {
 			}
 		});
 		btnDosyaEkle.setIcon(new ImageIcon(getClass().getResource("/javax/swing/plaf/metal/icons/ocean/file.gif")));
-		btnDosyaEkle.setToolTipText("Silinecek Dosyalar\u0131 Ekle");
+		btnDosyaEkle.setToolTipText("Silinecek DosyalarÄ± Ekle");
 		toolBar.add(btnDosyaEkle);
 
 		// toolBar.addSeparator();
 
-		btnKlasorEkle = new JButton("Klasör Ekle");
+		btnKlasorEkle = new JButton("KlasÃ¶r Ekle");
 		btnKlasorEkle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser jfc = new JFileChooser();
@@ -192,12 +196,12 @@ public class frmMain extends JFrame {
 		});
 		btnKlasorEkle
 				.setIcon(new ImageIcon(getClass().getResource("/javax/swing/plaf/metal/icons/ocean/directory.gif")));
-		btnKlasorEkle.setToolTipText("Klasör içindeki tüm dosyalarý ekle");
+		btnKlasorEkle.setToolTipText("KlasÃ¶r iÃ§indeki tÃ¼m dosyalarÄ± ekle");
 		toolBar.add(btnKlasorEkle);
 
 		// toolBar.addSeparator();
 
-		btnRemoveFile = new JButton("Seçimi Sil");
+		btnRemoveFile = new JButton("SeÃ§imi Sil");
 		btnRemoveFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (table.getRowCount() > 0 && table.getSelectedRow() != -1) {
@@ -210,7 +214,7 @@ public class frmMain extends JFrame {
 						abs.DeleteRow(i);
 					else if (type == FileType.Directory) {
 						int tut = JOptionPane.showConfirmDialog(frmMain.this,
-								"Klasörü ve içindeki dosyalarý listeden istediðinizden emin misiniz?");
+								"KlasÃ¶rÃ¼ ve iÃ§indeki dosyalarÄ± listeden istediÄŸinizden emin misiniz?");
 						if (tut == JOptionPane.YES_OPTION) {
 							abs.DeleteRow(i);
 
@@ -229,7 +233,7 @@ public class frmMain extends JFrame {
 		});
 		btnRemoveFile.setIcon(new ImageIcon(
 				getClass().getResource("/com/sun/javafx/scene/web/skin/DrawHorizontalLine_16x16_JFX.png")));
-		btnRemoveFile.setToolTipText("Seçili satýrý siler");
+		btnRemoveFile.setToolTipText("SeÃ§ili satÄ±rÄ± siler");
 		toolBar.add(btnRemoveFile);
 
 		// toolBar.addSeparator();
@@ -248,29 +252,59 @@ public class frmMain extends JFrame {
 
 		toolBar.addSeparator();
 		btnStart = new JButton("Wipe");
-		btnStart.setToolTipText("Listedeki dosyalarý güvenli bir þekilde sil");
+		btnStart.setToolTipText("Listedeki dosyalarÄ± gÃ¼venli bir ÅŸekilde sil");
 		btnStart.setIcon(new ImageIcon(getClass().getResource("/images/clear.png")));
 		toolBar.add(btnStart);
 
 		toolBar.addSeparator();
 
-		btnPart = new JButton("Disk Bölümü Temizle");
-		btnPart.setToolTipText("Disk böülümünü güvenli temizler.");
-		btnPart.setIcon(new ImageIcon(getClass().getResource("/images/Partition-Magic-icon.png")));
+		btnPart = new JButton("BoÅŸ AlanlarÄ± Temizle");
+		btnPart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				JFileChooser jfc = new JFileChooser();
+				jfc.setCurrentDirectory(new File("."));
+				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int tut = jfc.showOpenDialog(frmMain.this);
+				if (tut == JFileChooser.APPROVE_OPTION) {
+					String file=jfc.getSelectedFile().getAbsolutePath();
+					
+				}
+			}
+		});
+		btnPart.setToolTipText("Disk&Partition iÃ§in boÅŸ alanlarÄ± temizle.");
+		btnPart.setIcon(new ImageIcon(getClass().getResource("/images/cleanup.png")));
 		toolBar.add(btnPart);
 
 		btnDisk = new JButton("Full Disk Wipe");
 		btnDisk.addActionListener(new ActionListener() {
+			frmDisk frm = new frmDisk();
+
 			public void actionPerformed(ActionEvent arg0) {
-				 FileSystemView fsv = FileSystemView.getFileSystemView();
-			        File[] roots = fsv.getRoots();
-			        for (int i = 0; i < roots.length; i++) {
-			            System.out.println("Root: " + roots[i]);
-			        }
+				if (dialog == null) {
+					JComponent comp = (JComponent) arg0.getSource();
+					Window win = (Window) SwingUtilities.getWindowAncestor(comp);
+					if (win != null) {
+						dialog = new JDialog(win, "Disk SeÃ§", ModalityType.APPLICATION_MODAL);
+						dialog.getContentPane().add(frm);
+						dialog.pack();
+						dialog.setLocationRelativeTo(null);
+						dialog.setSize(new Dimension(400, 450));
+						dialog.setLocationRelativeTo(comp);
+					}
+				}
+				dialog.setVisible(true); // here the modal dialog takes over
+
+				// this line starts *after* the modal dialog has been disposed
+				// **** here's the key where I get the String from JTextField in
+				// the GUI
+				// held
+				// by the JDialog and put it into this GUI's JTextField.
+				JOptionPane.showMessageDialog(null, frm.getPath());
 
 			}
 		});
-		btnDisk.setToolTipText("Fiziksel diski güvenli temizler");
+		btnDisk.setToolTipText("Fiziksel diski gÃ¼venli temizler");
 		btnDisk.setIcon(new ImageIcon(getClass().getResource("/images/Apps-Drive-Harddisk-icon.png")));
 		toolBar.add(btnDisk);
 	}

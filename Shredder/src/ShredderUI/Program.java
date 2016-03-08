@@ -29,7 +29,9 @@ public class Program {
 
 				frmMain frm = new frmMain();
 				frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				 
 				frm.setVisible(true);
+			
 			}
 
 		});

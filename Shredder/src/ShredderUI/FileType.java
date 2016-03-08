@@ -1,5 +1,5 @@
 package ShredderUI;
 
 public enum FileType {
-Directory,File,Unknown
+Disk,Partition,Directory,File,Unknown
 }

@@ -1,4 +1,8 @@
 package ShredBase;
+
+//
+//*Builder pattern
+//
 import java.util.Random;
 
 public class WipeValues {

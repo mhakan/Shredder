@@ -1,4 +1,5 @@
 package ShredderUI;
+
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -15,5 +16,13 @@ public class ImageFactory {
 		} else
 			return new Images().defImg;
 
+	}
+
+	public ImageIcon DiskType(FileType f) {
+		if (f == FileType.Disk)
+			return new Images().getDiskImg();
+		else if(f==FileType.Partition)
+			return new Images().getPartImg();
+		return new Images().defImg;
 	}
 }

@@ -1,4 +1,5 @@
 package ShredderUI;
+
 import java.io.File;
 
 public class FileTypeFactory {
@@ -11,4 +12,15 @@ public class FileTypeFactory {
 		else
 			return FileType.Unknown;
 	}
+
+	public FileType GetFileType(String f) {
+
+		if (f.equals("disk"))
+			return FileType.Disk;
+		else if (f.equals( "part"))
+			return FileType.Partition;
+		else
+			return FileType.Unknown;
+	}
+
 }

@@ -1,12 +1,14 @@
 package ShredBase;
+
 import java.io.File;
 import java.nio.file.Files;
 
-public class ShredDod extends Shred implements IShredFile {
+public class ShredDod extends ShredFile {
 
 	public ShredDod(String path) {
-		super(path);
+		super(new File(path));
 		this.f = new File(path);
+
 		if (f == null || Files.exists(f.toPath()) == false) {
 			try {
 				finalize();
@@ -17,9 +19,7 @@ public class ShredDod extends Shred implements IShredFile {
 		}
 	}
 
-	public void NameClear() {
 
-	}
 
 	public ShredDod(File file) {
 		super(file);
@@ -40,9 +40,8 @@ public class ShredDod extends Shred implements IShredFile {
 			WipeMetod((short) (j + 1));
 
 		}
-		SetCreationTime();
-		SetLastModifiedTime();
-		SetLastAccessTime();
+		// new new A(f).MetaDataClear();
+
 		f.delete();
 	}
 
