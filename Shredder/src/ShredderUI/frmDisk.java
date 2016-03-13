@@ -67,7 +67,7 @@ public class frmDisk extends JPanel {
 					setPath((String) table.getValueAt(row, 3));
 					try {
 						Window window = SwingUtilities.getWindowAncestor(frmDisk.this);
-						window.setVisible( false );
+						window.setVisible(false);
 					} catch (Throwable e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -75,6 +75,7 @@ public class frmDisk extends JPanel {
 				}
 			}
 		});
+		//
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setRowSelectionAllowed(true);
 		table.setFillsViewportHeight(true);
@@ -91,7 +92,7 @@ public class frmDisk extends JPanel {
 	}
 
 	private JTable table;
-	private String selectedPath;
+	private String selectedPath = "";
 
 	public String getPath() {
 		return selectedPath;

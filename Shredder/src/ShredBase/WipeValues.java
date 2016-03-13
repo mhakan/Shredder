@@ -1,5 +1,6 @@
 package ShredBase;
 
+import java.nio.ByteBuffer;
 //
 //*Builder pattern
 //
@@ -19,7 +20,7 @@ public class WipeValues {
 		this.Length = len;
 	}
 
-	public byte[] GenerateValue() {
+	public ByteBuffer GenerateValue() {
 		if (id == 0)
 			return SetRawBuf(Length, ZERO);
 		if (id == 1)
@@ -34,18 +35,19 @@ public class WipeValues {
 
 	public static byte ZERO = (0x00), PASS1 = (0X55), PASS2 = (byte) (0XAA);
 
-	private byte[] SetRawBuf(int len, byte val) {
-		byte[] b = new byte[len];
-		for (int i = 0; i < b.length; i++) {
-			b[i] = val;
+	private ByteBuffer SetRawBuf(int len, byte val) {
+		ByteBuffer b = ByteBuffer.allocate(len);
+
+		for (int i = 0; i < len; i++) {
+			b.array()[i] = val;
 		}
 		return b;
 
 	}
 
-	private byte[] SetRawBuf(int Len) {
-		byte[] b = new byte[Len];
-		new Random().nextBytes(b);
+	private ByteBuffer SetRawBuf(int len) {
+		ByteBuffer b = ByteBuffer.allocate(len);
+		new Random().nextBytes(b.array());
 		return b;
 
 	}

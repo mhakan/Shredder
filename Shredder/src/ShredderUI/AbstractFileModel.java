@@ -48,18 +48,7 @@ public class AbstractFileModel extends AbstractTableModel {
 		fireTableCellUpdated(row, column);
 	}
 
-	public boolean hasEmptyRow() {
-		if (dataVector.size() == 0)
-			return false;
-		FileModel fm = (FileModel) dataVector.get(dataVector.size() - 1);
-		if (fm.getFileName().trim().equals("") && String.valueOf(fm.getSize()).trim().equals("")
-				&& fm.getType().toString().trim().equals("") && fm.getLastModified().toString().trim().equals("")
-				&& fm.getLastAccess().toString().trim().equals("") && fm.getCreatedTime().toString().trim().equals("")
-				&& fm.getImg() == null) {
-			return true;
-		} else
-			return false;
-	}
+	 
 
 	public void RemoveAll(){
 		
@@ -76,11 +65,13 @@ public class AbstractFileModel extends AbstractTableModel {
 		
 		dataVector.add(new FileModel(f));
 		fireTableRowsInserted(dataVector.size() - 1, dataVector.size() - 1);
+		fireTableDataChanged();
 	}
 	public void DeleteRow(int rowIndex){
 		
-		dataVector.remove(rowIndex);
+		dataVector.removeElementAt(rowIndex);
 		fireTableRowsDeleted(rowIndex, rowIndex);
+		fireTableDataChanged();
 	}
 
 }

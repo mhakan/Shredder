@@ -3,45 +3,27 @@ package ShredBase;
 import java.io.File;
 import java.nio.file.Files;
 
+import ShredderUI.ShredObserver;
+
 public class ShredDod extends ShredFile {
 
-	public ShredDod(String path) {
-		super(new File(path));
-		this.f = new File(path);
+	public ShredDod(File f) {
+		super(f);
 
-		if (f == null || Files.exists(f.toPath()) == false) {
-			try {
-				finalize();
-			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
+	public void Shred(ShredObserver sho) {
+		MetaData m = new MetaData(f);
+		m.SetWritable();
 
-
-	public ShredDod(File file) {
-		super(file);
-		this.f = file;
-		if (f == null || Files.exists(f.toPath()) == false) {
-			try {
-				finalize();
-			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		Body bd=null;
+		for (int i = 1; i < 4; i++) {
+			bd = new Body(f,(short) i);
+			bd.add(sho);
+			bd.startWipe();// Wiping body
+			m.startClear();
 		}
-	}
-
-	public void WipeFile() {
-
-		for (short j = 0; j < 3; j++) {
-			WipeMetod((short) (j + 1));
-
-		}
-		// new new A(f).MetaDataClear();
-
+		bd.SetFileLength();
 		f.delete();
 	}
 

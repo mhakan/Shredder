@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import ShredderUI.ShredObserver;
+
 /**
  * 
  */
@@ -18,76 +20,25 @@ import java.util.logging.Logger;
  * @author Selami
  *
  */
-public class ShredFile extends Body implements IMetaData {
+
+public class ShredFile implements IShred {
 
 	protected File f;
 
 	public ShredFile(File file) {
-		super(file);
-		if (file.isDirectory())
-			try {
-				finalize();
-			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		this.f = file;
 	}
 
-	
-
-	public void WipeFile() {
-
-		WipeMetod((short) 0);
-	
-		SetFileLength();
+	public void Shred(ShredObserver sho) {
+		MetaData m = new MetaData(f);
+		m.SetWritable();
+		Body bd = new Body(f,(short) 0);
+		bd.add(sho);
+		bd.startWipe();// Wipe Zero
+		
+		m.startClear();
+		bd.SetFileLength();
 		f.delete();
-	}
-
-
-
-
-	private void SetFileLength() {
-		try {
-			RandomAccessFile rand = new RandomAccessFile(f, "rws");
-			rand.setLength(0);
-			rand.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-
-
-	@Override
-	public void NameClear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void SetCreationTime() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void SetLastAccessTime() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void SetLastModifiedTime() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

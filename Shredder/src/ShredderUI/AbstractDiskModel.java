@@ -46,17 +46,6 @@ public class AbstractDiskModel extends AbstractTableModel {
 		fireTableCellUpdated(row, column);
 	}
 
-	public boolean hasEmptyRow() {
-		if (dataVector.size() == 0)
-			return false;
-		DiskModel dm = (DiskModel) dataVector.get(dataVector.size() - 1);
-		if (dm.getdeviceName().trim().equals("") && String.valueOf(dm.getSize()).trim().equals("")
-				&& dm.getPath().toString().trim().equals("") && dm.getImg() == null) {
-			return true;
-		} else
-			return false;
-	}
-
 	public void RemoveAll() {
 
 		int i = dataVector.size();
